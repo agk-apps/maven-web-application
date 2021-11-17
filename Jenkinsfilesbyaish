@@ -15,10 +15,12 @@ stage('ExecuteSOnarQubReport'){
 stage('UploadArtiFactsTntoNexusRepo'){
     sh "${mavenHome}/bin/mvn deploy"
 }
+/*
 stage('DeployAppintoTomcatServer'){
  sshagent(['7a2fd834-2468-4f8f-a381-d4322365c8aa']) {
 sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.110.43.86://opt/apache-tomcat-9.0.54/webapps"
 }
+*/
 }
 /*
 stage('SendEmailNotiFication'){
