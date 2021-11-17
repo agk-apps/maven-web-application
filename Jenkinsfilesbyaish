@@ -1,1 +1,32 @@
 
+node{
+    
+def mavenHome = tool name: "maven3.8.3"
+stage('CheckOutCode'){
+git branch: 'development', credentialsId: 'd8de2401-edd9-436d-95df-5eb7291f859a', url: 'https://github.com/agk-apps/maven-web-application.git'
+}
+
+stage('Build'){
+sh "${mavenHome}/bin/mvn clean package"
+}
+stage('ExecuteSOnarQubReport'){
+    sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+stage('UploadArtiFactsTntoNexusRepo'){
+    sh "${mavenHome}/bin/mvn deploy"
+}
+stage('DeployAppintoTomcatServer'){
+ sshagent(['7a2fd834-2468-4f8f-a381-d4322365c8aa']) {
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.110.43.86://opt/apache-tomcat-9.0.54/webapps"
+}
+}
+/*
+stage('SendEmailNotiFication'){
+    mail bcc: '', body: '''Build Over...
+Regards,
+Aishwarya Kuntla..''', cc: 'kuntlaaish@gmail.com', from: '', replyTo: '', subject: 'Build over!....', to: 'kuntlaaish@gmail.com'
+    
+}
+*/
+}
+
